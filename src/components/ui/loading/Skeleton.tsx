@@ -2,55 +2,56 @@ import { MdImageSearch, MdKeyboardArrowRight } from "react-icons/md";
 
 export const LoadingDots = () => {
   return (
-    <div className="flex space-x-2 justify-center items-center bg-transparent">
+    <div className="flex items-center justify-center space-x-2 bg-transparent">
       <span className="sr-only">Loading...</span>
-      <div className="h-2 w-2 bg-zinc-100 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-      <div className="h-2 w-2 bg-zinc-100 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-      <div className="h-2 w-2 bg-zinc-100 rounded-full animate-bounce"></div>
+      <div className="h-2 w-2 animate-bounce rounded-full bg-zinc-100 [animation-delay:-0.3s]"></div>
+      <div className="h-2 w-2 animate-bounce rounded-full bg-zinc-100 [animation-delay:-0.15s]"></div>
+      <div className="h-2 w-2 animate-bounce rounded-full bg-zinc-100"></div>
     </div>
   );
 };
 
 export const SkeletonCard = () => {
   return (
-    <div className=" flex justify-center mb-20">
+    <div className="mb-20 flex justify-center">
       <div
         role="status"
-        className="p-8 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-lg w-full max-w-md shadow animate-pulse md:p-6">
+        className="w-full max-w-md animate-pulse space-y-4 divide-y divide-gray-200 rounded-lg border border-gray-200 p-8 shadow md:p-6"
+      >
         <div className="flex items-center justify-between">
           <div>
-            <div className="h-2.5 bg-gray-300 rounded-full  w-24 mb-2.5"></div>
-            <div className="w-32 h-2 bg-gray-200 rounded-full"></div>
+            <div className="mb-2.5 h-2.5 w-24 rounded-full bg-gray-300"></div>
+            <div className="h-2 w-32 rounded-full bg-gray-200"></div>
           </div>
-          <div className="h-2.5 bg-gray-300 rounded-full  w-12"></div>
+          <div className="h-2.5 w-12 rounded-full bg-gray-300"></div>
         </div>
         <div className="flex items-center justify-between pt-4">
           <div>
-            <div className="h-2.5 bg-gray-300 rounded-full w-24 mb-2.5"></div>
-            <div className="w-32 h-2 bg-gray-200 rounded-full "></div>
+            <div className="mb-2.5 h-2.5 w-24 rounded-full bg-gray-300"></div>
+            <div className="h-2 w-32 rounded-full bg-gray-200"></div>
           </div>
-          <div className="h-2.5 bg-gray-300 rounded-full  w-12"></div>
+          <div className="h-2.5 w-12 rounded-full bg-gray-300"></div>
         </div>
         <div className="flex items-center justify-between pt-4">
           <div>
-            <div className="h-2.5 bg-gray-300 rounded-full w-24 mb-2.5"></div>
-            <div className="w-32 h-2 bg-gray-200 rounded-full "></div>
+            <div className="mb-2.5 h-2.5 w-24 rounded-full bg-gray-300"></div>
+            <div className="h-2 w-32 rounded-full bg-gray-200"></div>
           </div>
-          <div className="h-2.5 bg-gray-300 rounded-full  w-12"></div>
+          <div className="h-2.5 w-12 rounded-full bg-gray-300"></div>
         </div>
         <div className="flex items-center justify-between pt-4">
           <div>
-            <div className="h-2.5 bg-gray-300 rounded-full w-24 mb-2.5"></div>
-            <div className="w-32 h-2 bg-gray-200 rounded-full "></div>
+            <div className="mb-2.5 h-2.5 w-24 rounded-full bg-gray-300"></div>
+            <div className="h-2 w-32 rounded-full bg-gray-200"></div>
           </div>
-          <div className="h-2.5 bg-gray-300 rounded-full  w-12"></div>
+          <div className="h-2.5 w-12 rounded-full bg-gray-300"></div>
         </div>
         <div className="flex items-center justify-between pt-4">
           <div>
-            <div className="h-2.5 bg-gray-300 rounded-full w-24 mb-2.5"></div>
-            <div className="w-32 h-2 bg-gray-200 rounded-full "></div>
+            <div className="mb-2.5 h-2.5 w-24 rounded-full bg-gray-300"></div>
+            <div className="h-2 w-32 rounded-full bg-gray-200"></div>
           </div>
-          <div className="h-2.5 bg-gray-300 rounded-full  w-12"></div>
+          <div className="h-2.5 w-12 rounded-full bg-gray-300"></div>
         </div>
         <span className="sr-only">Loading...</span>
       </div>
@@ -60,14 +61,15 @@ export const SkeletonCard = () => {
 
 export const SkeletonBox = () => {
   return (
-    <div className=" flex justify-center mb-5">
+    <div className="mb-5 flex justify-center">
       <div
         role="status"
-        className=" border border-gray-200 py-3 px-4 mt-4 divide-y divide-gray-200 rounded-lg lg:w-52 w-full max-w-md shadow animate-pulse md:p-6">
+        className="mt-4 w-full max-w-md animate-pulse divide-y divide-gray-200 rounded-lg border border-gray-200 px-4 py-3 shadow md:p-6 lg:w-52"
+      >
         <div className="flex items-center justify-between">
           <MdImageSearch size={40} />
           <div>
-            <MdKeyboardArrowRight className="text-xl lg:text-2xl flex-shrink-0" />
+            <MdKeyboardArrowRight className="flex-shrink-0 text-xl lg:text-2xl" />
           </div>
           <MdImageSearch size={40} />
         </div>

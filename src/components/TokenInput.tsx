@@ -17,12 +17,13 @@ const TokenInput = ({
   ];
 
   return (
-    <div className="m-4 ">
-      <label className="block text-lg font-medium ">{label}</label>
+    <div className="m-4">
+      <label className="block text-lg font-medium">{label}</label>
       <select
         className="border px-4 py-2"
         value={token}
-        onChange={(e) => setToken(e.target.value)}>
+        onChange={(e) => setToken(e.target.value)}
+      >
         {tokens
           .filter((t) => t.mint !== excludedToken)
           .map((t) => (

@@ -29,22 +29,25 @@ export const BackgroundBeams = React.memo(
       <div
         className={cn(
           "absolute inset-0 -z-10 flex items-center justify-center opacity-50",
-          className
-        )}>
+          className,
+        )}
+      >
         <svg
-          className="h-full w-full pointer-events-none absolute"
+          className="pointer-events-none absolute h-full w-full"
           width="100%"
           height="100%"
           viewBox="0 0 696 316"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg">
+          xmlns="http://www.w3.org/2000/svg"
+        >
           {paths.map((path, index) => (
             <motion.path
               key={`path-` + index}
               d={path}
               stroke={`url(#linearGradient-${index})`}
               strokeOpacity="0.4"
-              strokeWidth="0.5"></motion.path>
+              strokeWidth="0.5"
+            ></motion.path>
           ))}
           <defs>
             {paths.map((_path, index) => (
@@ -67,7 +70,8 @@ export const BackgroundBeams = React.memo(
                   duration: Math.random() * 20 + 10,
                   ease: "easeInOut",
                   repeat: Infinity,
-                }}>
+                }}
+              >
                 <stop stopColor="#18CCFC" stopOpacity="0"></stop>
                 <stop stopColor="#18CCFC"></stop>
                 <stop offset="32.5%" stopColor="#6344F5"></stop>
@@ -81,7 +85,8 @@ export const BackgroundBeams = React.memo(
               cy="0"
               r="1"
               gradientUnits="userSpaceOnUse"
-              gradientTransform="translate(352 34) rotate(90) scale(555 1560.62)">
+              gradientTransform="translate(352 34) rotate(90) scale(555 1560.62)"
+            >
               <stop offset="0.0666667" stopColor="var(--neutral-300)"></stop>
               <stop offset="0.243243" stopColor="var(--neutral-300)"></stop>
               <stop offset="0.43594" stopColor="white" stopOpacity="0"></stop>
@@ -90,7 +95,7 @@ export const BackgroundBeams = React.memo(
         </svg>
       </div>
     );
-  }
+  },
 );
 
 BackgroundBeams.displayName = "BackgroundBeams";

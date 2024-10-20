@@ -9,7 +9,7 @@ function App() {
         <div className="absolute inset-0">
           <BackgroundBeams />
         </div>
-        <div className="relative z-10 archivo-f text-white">
+        <div className="archivo-f relative z-10 text-white">
           <Navbar />
           <Home />
         </div>

@@ -29,7 +29,7 @@ const TokenSearchModal: React.FC<TokenSearchModalProps> = ({
 
   const handleSearch = async (term: string) => {
     let filtered = popularTokens.filter((token) =>
-      token.tokenList.symbol.toLowerCase().includes(term.toLowerCase())
+      token.tokenList.symbol.toLowerCase().includes(term.toLowerCase()),
     );
 
     setSearchTerm(term);
@@ -41,7 +41,7 @@ const TokenSearchModal: React.FC<TokenSearchModalProps> = ({
       if (base58Regex.test(term)) {
         try {
           const response = await axios.get(
-            `https://api.solana.fm/v1/tokens/${term}`
+            `https://api.solana.fm/v1/tokens/${term}`,
           );
 
           if (response.data) {
@@ -60,7 +60,7 @@ const TokenSearchModal: React.FC<TokenSearchModalProps> = ({
   };
 
   const handleOverlayClick = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     // If the target is the overlay itself, close the modal
     if (e.target === e.currentTarget) {
@@ -70,16 +70,16 @@ const TokenSearchModal: React.FC<TokenSearchModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-gray-800 bg-opacity-75 flex z-50 justify-center items-center transition-opacity ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75 transition-opacity ${
         isOpen ? "visible opacity-100" : "invisible opacity-0"
       }`}
       onClick={handleOverlayClick} // Add click handler for the overlay
     >
-      <div className="bg-zinc-950 rounded-lg shadow-lg p-6 w-full max-w-md relative">
-        <button onClick={onClose} className="absolute top-3 right-3 font-thin ">
+      <div className="relative w-full max-w-md rounded-lg bg-zinc-950 p-6 shadow-lg">
+        <button onClick={onClose} className="absolute right-3 top-3 font-thin">
           <IoClose size={30} />
         </button>
-        <h3 className="text-xl mb-4">
+        <h3 className="mb-4 text-xl">
           {isInput ? "Select Input Token" : "Select Output Token"}
         </h3>
 
@@ -88,7 +88,7 @@ const TokenSearchModal: React.FC<TokenSearchModalProps> = ({
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
           placeholder="Search token by name or mint"
-          className="border text-black rounded-md px-4 py-2 w-full mb-4"
+          className="mb-4 w-full rounded-md border px-4 py-2 text-black"
         />
 
         <div className="space-y-2">
@@ -96,20 +96,21 @@ const TokenSearchModal: React.FC<TokenSearchModalProps> = ({
             filteredTokens.map((token: any) => (
               <div
                 key={token.mint}
-                className="flex items-center justify-between cursor-pointer hover:bg-gray-100 hover:text-black p-2 rounded"
+                className="flex cursor-pointer items-center justify-between rounded p-2 hover:bg-gray-100 hover:text-black"
                 onClick={() => {
                   onSelectToken(token.mint);
                   onClose();
-                }}>
+                }}
+              >
                 <div className="flex items-center space-x-2">
                   <img
                     src={token.tokenList.image}
                     alt={token.tokenList.symbol}
-                    className="w-8 h-8 rounded-full"
+                    className="h-8 w-8 rounded-full"
                   />
                   <span className="text-xl">{token.tokenList.symbol}</span>
                 </div>
-                <span className="text-gray-500 text-md">
+                <span className="text-md text-gray-500">
                   {token.mint.slice(0, 5) + "..." + token.mint.slice(-3)}
                 </span>
               </div>
