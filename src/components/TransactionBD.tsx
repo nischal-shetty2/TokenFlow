@@ -12,7 +12,7 @@ export const TransactionBreakdown = ({
   tokenDecimals,
 }: TransactionDetailsProps) => {
   return (
-    <div className=" w-full md:flex flex-wrap justify-center gap-6 p-2 lg:p-10 pt-0">
+    <div className=" w-full md:flex flex-wrap justify-center gap-6 p-2 md:p-6 pt-0">
       {routePlan.map((route, index) => {
         const { swapInfo } = route;
         const { label, inputMint, outputMint, inAmount, outAmount, feeAmount } =
@@ -26,7 +26,7 @@ export const TransactionBreakdown = ({
         return (
           <div
             key={index}
-            className="border p-4 rounded-lg shadow-sm mt-5 w-full md:w-[30vh] lg:w-[60vh]">
+            className="border p-4 rounded-lg shadow-sm mt-5 w-full md:w-[50vh] lg:w-[60vh]">
             <div className="flex justify-center items-center">
               <div className="flex items-center space-x-4">
                 {inputImage && outputImage && (
@@ -50,19 +50,19 @@ export const TransactionBreakdown = ({
               <div className="font-semibold">{label}</div>
             </div>
 
-            <div className="mt-4 text-lg text-center">
+            <div className="mt-4 lg:text-lg text-sm text-center">
               <p>
                 <strong>Platform:</strong> {label}
               </p>
               <p className="break-all">
                 <strong>Input Amount:</strong>{" "}
                 {(Number(inAmount) / 10 ** Number(inputDecimals)).toFixed(6)}{" "}
-                SOL
+                {routePlan[0].swapInfo.label}
               </p>
               <p className="break-all">
                 <strong>Output Amount:</strong>{" "}
                 {(Number(outAmount) / 10 ** Number(outputDecimals)).toFixed(6)}{" "}
-                SOL
+                {routePlan[routePlan.length - 1].swapInfo.label}
               </p>
               <p>
                 <strong>Fees:</strong> {Number(feeAmount)} lamports

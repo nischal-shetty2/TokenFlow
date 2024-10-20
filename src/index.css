@@ -28,3 +28,9 @@
 .animate-slide-down-slow {
   animation: slide-down 1700ms ease-out;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

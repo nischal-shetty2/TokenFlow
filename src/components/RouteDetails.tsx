@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  MdImageSearch,
-  MdKeyboardArrowRight,
-  MdOutlineImageNotSupported,
-} from "react-icons/md";
+import { MdImageSearch, MdKeyboardArrowRight } from "react-icons/md";
 import { TransactionBreakdown } from "./TransactionBD";
 
 interface SwapInfo {
@@ -25,22 +21,15 @@ export interface RoutePlan {
 
 interface RouteDetailsProps {
   routePlan: RoutePlan[];
-  tokenImages: Record<string, string>;
-  setTokenImages: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
 
-const RouteDetails: React.FC<RouteDetailsProps> = ({
-  routePlan,
-  tokenImages,
-  setTokenImages,
-}) => {
+const RouteDetails: React.FC<RouteDetailsProps> = ({ routePlan }) => {
+  const [tokenImages, setTokenImages] = useState<Record<string, string>>({});
   const [tokenDecimals, setTokenDecimals] = useState<Record<string, number>>(
     {}
   );
 
-  // Fetch images and decimals for all tokens in the route
   useEffect(() => {
-    console.log("hi");
     const fetchImagesAndDecimals = async () => {
       const newTokenImages: Record<string, string> = {};
       const newTokenDecimals: Record<string, number> = {};
@@ -136,8 +125,9 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({
             </span>
           </div>
         ) : (
-          <div className=" animate-pulse">
+          <div className=" animate-pulse px-5 py-3">
             <MdImageSearch size={40} />
+            <div className="h-1 mt-1 bg-gray-300 rounded-full w-12"></div>
           </div>
         )}
 
@@ -149,7 +139,10 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({
             {tokenImages[token.mint] ? (
               <div className="flex flex-col items-center min-w-[60px] lg:min-w-[80px]">
                 <img
-                  onError={() => "/no-img.png"}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null;
+                    currentTarget.src = "no-img.png";
+                  }}
                   src={tokenImages[token.mint]}
                   alt={`Token ${index + 1}`}
                   className="w-8 h-8 lg:w-12 lg:h-12 p-0.5 bg-white  rounded-full"
@@ -159,8 +152,9 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({
                 </span>
               </div>
             ) : (
-              <div className=" animate-pulse">
+              <div className=" animate-pulse px-5 py-3">
                 <MdImageSearch size={40} />
+                <div className="h-1 mt-1 bg-gray-300 rounded-full w-12"></div>
               </div>
             )}
             <MdKeyboardArrowRight className="text-xl lg:text-2xl flex-shrink-0" />
@@ -171,7 +165,10 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({
         {tokenImages[lastOutputMint] ? (
           <div className="flex flex-col items-center min-w-[60px] lg:min-w-[80px]">
             <img
-              onError={() => "/no-img.png"}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src = "no-img.png";
+              }}
               src={tokenImages[lastOutputMint]}
               alt="End Token"
               className="w-8 h-8 lg:w-12 lg:h-12 p-0.5 bg-white  rounded-full"
@@ -181,8 +178,9 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({
             </span>
           </div>
         ) : (
-          <div className=" animate-pulse">
+          <div className=" animate-pulse px-5 py-3">
             <MdImageSearch size={40} />
+            <div className="h-1 mt-1 bg-gray-300 rounded-full  w-12"></div>
           </div>
         )}
       </div>
@@ -212,14 +210,20 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({
               <>
                 <div className="flex items-center gap-2 lg:gap-4">
                   <img
-                    onError={() => "/no-img.png"}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src = "no-img.png";
+                    }}
                     src={inputImage}
                     alt="Input Token"
                     className="w-9 h-9 rounded-full p-0.5 bg-white "
                   />
                   <MdKeyboardArrowRight className="text-xl lg:text-2xl flex-shrink-0" />
                   <img
-                    onError={() => "/no-img.png"}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src = "no-img.png";
+                    }}
                     src={outputImage}
                     alt="Output Token"
                     className="w-9 h-9 rounded-full p-0.5 bg-white "
@@ -227,12 +231,12 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({
                 </div>
 
                 <div className="flex flex-col w-full lg:w-auto text-center">
-                  <p className="text-xs lg:text-sm">{label}:</p>
-                  <p className="text-xs lg:text-base break-all">
+                  <p className=" text-sm">{label}:</p>
+                  <p className=" text-base break-all">
                     {(Number(inAmount) / 10 ** inputDecimals).toFixed(6)} →{" "}
                     {(Number(outAmount) / 10 ** outputDecimals).toFixed(6)}
                   </p>
-                  <p className="text-xs text-gray-500">{percent}% of route</p>
+                  <p className=" text-sm text-gray-500">{percent}% of route</p>
                 </div>
               </>
             ) : (
@@ -240,9 +244,7 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({
                 <MdImageSearch size={40} />
                 <MdKeyboardArrowRight className="text-xl lg:text-2xl flex-shrink-0" />
                 <MdImageSearch size={40} />
-                <p className="text-xs lg:text-sm text-center">
-                  Loading token data...
-                </p>
+                <p className=" text-sm text-center">Loading token data...</p>
               </div>
             )}
           </div>

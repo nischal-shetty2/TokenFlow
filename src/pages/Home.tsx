@@ -10,6 +10,8 @@ import {
   SkeletonBox,
   SkeletonCard,
 } from "../components/ui/loading/Skeleton";
+import { BackgroundGradient } from "../components/ui/BackgroundGradient";
+import SlippageOptions from "../components/SlippageOptions";
 
 const Home = () => {
   const solAddress: string = "So11111111111111111111111111111111111111112";
@@ -22,14 +24,14 @@ const Home = () => {
   const [outputToken, setOutputToken] = useState(usdcAddress);
   const [outputTokenSymbol, setOutputTokenSymbol] = useState("USDC");
   const [imgOutput, setImgOutput] = useState<string | undefined>(
-    "/UsdcLogo.png"
+    "/UsdcLogo.png",
   );
   const [outputDecimals, setOutputDecimals] = useState<number>(9);
 
   const [amount, setAmount] = useState<number | null>(null);
   const [price, setPrice] = useState<number | null>(null);
   const [routePlan, setRoutePlan] = useState([]);
-  const [tokenImages, setTokenImages] = useState<Record<string, string>>({});
+  const [slippage, setSlippage] = useState<number>(0.5);
 
   const [isInputModalOpen, setIsInputModalOpen] = useState(false);
   const [isOutputModalOpen, setIsOutputModalOpen] = useState(false);
@@ -37,7 +39,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (inputToken && !isLoading) {
+    if (inputToken) {
       getSwapTokenImg(inputToken, true);
       if (debouncedAmount) {
         checkPrice();
@@ -46,13 +48,21 @@ const Home = () => {
   }, [inputToken]);
 
   useEffect(() => {
-    if (outputToken && !isLoading) {
+    if (outputToken) {
       getSwapTokenImg(outputToken, false);
       if (debouncedAmount) {
         checkPrice();
       }
     }
   }, [outputToken]);
+
+  useEffect(() => {
+    if (slippage > 0 && inputToken && outputToken) {
+      if (debouncedAmount) {
+        checkPrice();
+      }
+    }
+  }, [slippage]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -65,11 +75,7 @@ const Home = () => {
   // Use debouncedAmount for your search logic
   useEffect(() => {
     if (debouncedAmount && !isLoading) {
-      if (debouncedAmount > 0) {
-        checkPrice();
-      } else if (debouncedAmount === 0) {
-        alert("Amount should be greater than 0");
-      }
+      checkPrice();
     }
   }, [debouncedAmount]);
 
@@ -77,16 +83,23 @@ const Home = () => {
     setIsLoading(true);
     try {
       if (!inputDecimals || !outputDecimals) {
-        throw "invalid decimal metadata";
+        throw new Error("Invalid decimal metadata");
       }
-      if (!debouncedAmount) return;
+      if (!debouncedAmount || debouncedAmount <= 0) {
+        throw new Error("Invalid Price");
+      }
       const lamports = debouncedAmount * 10 ** inputDecimals;
       if (lamports <= 0) {
         alert("Amount should be greater than 0");
-        return;
+        throw new Error("Invalid Price");
+      }
+      if (!slippage || slippage < 0.1) {
+        throw new Error("Invalid Slippage");
       }
       const response = await axios.get(
-        `https://quote-api.jup.ag/v6/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${lamports}`
+        `https://quote-api.jup.ag/v6/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${lamports}&swapMode=ExactIn&slippageBps=${
+          slippage * 100
+        }`,
       );
       const { routePlan, outAmount } = response.data;
       const priceInOutputToken = outAmount / 10 ** outputDecimals;
@@ -102,7 +115,7 @@ const Home = () => {
   const getSwapTokenImg = async (token: string, isInput: boolean) => {
     try {
       const response = await axios.get(
-        `https://api.solana.fm/v1/tokens/${token}`
+        `https://api.solana.fm/v1/tokens/${token}`,
       );
 
       const imageUrl = response.data.tokenList.image;
@@ -120,18 +133,21 @@ const Home = () => {
     } catch (e) {
       console.error("Error fetching token image:", e);
       if (isInput) {
-        setImgInput(undefined);
-        setInputDecimals(0);
+        setImgInput(" ");
+        setInputDecimals(9);
       } else {
-        setImgOutput(undefined);
-        setOutputDecimals(0);
+        setImgOutput(" ");
+        setOutputDecimals(9);
       }
     }
   };
 
   const handleAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    if (value === "" || (!isNaN(Number(value)) && Number(value) >= 0)) {
+    if (!slippage) {
+      setSlippage(0.5);
+    }
+    if (value === "" || (!isNaN(Number(value)) && Number(value) > 0)) {
       setAmount(value ? Number(value) : null);
     } else {
       alert("Please enter a valid amount greater than 0.");
@@ -158,122 +174,194 @@ const Home = () => {
   };
 
   return (
-    <div className="flex justify-center ">
-      <div className="space-y-10 mt-20">
-        <div className="flex flex-col lg:flex-row justify-center lg:space-x-20 space-y-6 lg:space-y-0 items-center">
-          <div className="flex lg:flex-col items-center lg:space-x-0 space-x-5">
+    <div className="flex justify-center">
+      <div className="mt-6 space-y-10 lg:mt-20">
+        <div className="flex flex-col items-center justify-center space-y-6 lg:flex-row lg:space-y-0">
+          <div className="block rounded-3xl border text-[10px] lg:hidden">
+            <SlippageOptions slippage={slippage} setSlippage={setSlippage} />
+          </div>
+          <div className="flex items-center space-x-5 lg:flex-col lg:space-x-0">
             {imgInput ? (
               <>
-                <img
-                  src={imgInput}
-                  alt="Input Token"
-                  className="rounded-full lg:w-40 w-28 p-1 bg-white"
-                />
+                <BackgroundGradient>
+                  <img
+                    onClick={() => setIsInputModalOpen(true)}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src = "no-img.png";
+                    }}
+                    src={imgInput}
+                    alt="Input Token"
+                    className="w-28 rounded-full bg-white p-1 lg:w-40"
+                  />
+                </BackgroundGradient>
               </>
             ) : (
               <p>No image available for Input Token</p>
             )}
             <button
               onClick={() => setIsInputModalOpen(true)}
-              className="border rounded-md lg:min-w-40 min-w-24 py-2 mt-3 hover:text-white hover:bg-zinc-900 transition">
-              <div className="flex justify-between items-center mx-5">
+              className="mt-3 min-w-24 rounded-md border bg-black py-2 transition hover:bg-white hover:text-black lg:min-w-40"
+            >
+              <div className="mx-5 flex items-center justify-between">
                 <div className="font-medium">{inputTokenSymbol}</div>
                 <IoIosArrowDown />
               </div>
             </button>
+            <div className="relative hidden items-center justify-between pt-10 lg:flex">
+              <input
+                type="number"
+                value={amount ?? ""}
+                onChange={(e) => handleAmountChange(e)}
+                placeholder="Enter Amount"
+                className="focus:ring-1.5 rounded-lg border bg-black py-2 pl-6 text-lg transition hover:border-indigo-400"
+              />
+              <div className="absolute right-4">
+                <Spinner isLoading={isLoading}>
+                  <img
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src = "no-img.png";
+                    }}
+                    src={imgInput}
+                    className="h-8 w-8 rounded-full bg-white p-[1px]"
+                    alt="input token"
+                  />
+                </Spinner>
+              </div>
+            </div>
           </div>
 
           {/* switch button */}
-          <div className="flex justify-center items-center ">
-            <button
-              onClick={handleTokenSwap}
-              className={`${
-                isLoading ? "bg-gray-500" : "bg-blue-600 hover:bg-blue-700"
-              } text-white font-bold p-3 rounded-full transition`}>
-              <IoSwapHorizontal />
-            </button>
+          <div className="mx-20 grid grid-rows-10 lg:gap-4">
+            <div className="row-span-10 flex items-center justify-center">
+              <div className="lg:space-y-10">
+                <div className="hidden rounded-3xl border text-xs lg:block">
+                  <SlippageOptions
+                    slippage={slippage}
+                    setSlippage={setSlippage}
+                  />
+                </div>
+                <div className="flex justify-center">
+                  <button
+                    onClick={handleTokenSwap}
+                    className={`${
+                      isLoading
+                        ? "bg-gray-500"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    } rounded-full p-3 text-xl font-bold text-white transition`}
+                  >
+                    <IoSwapHorizontal />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="row-span-10 mt-12 hidden h-full w-full flex-col items-center justify-center lg:flex">
+              <div className="flex justify-center">
+                {isLoading ? (
+                  <LoadingDots />
+                ) : (
+                  <div className="bg-gradient-to-r from-purple-500 to-sky-400 bg-clip-text text-5xl text-transparent">
+                    ➔
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Output Token */}
-          <div className="flex lg:flex-col items-center lg:space-x-0 space-x-5">
-            {imgOutput ? (
-              <>
-                <img
-                  src={imgOutput}
-                  alt="Output Token"
-                  className="rounded-full lg:w-40 w-28 p-1 bg-white"
-                />
-              </>
-            ) : (
-              <p>No image available for Output Token</p>
-            )}
-            <button
-              onClick={() => setIsOutputModalOpen(true)}
-              className="border rounded-md lg:min-w-40 min-w-24 py-2 mt-3 hover:text-white hover:bg-zinc-900 transition">
-              <div className="flex justify-between items-center mx-5">
-                <div className="font-medium">{outputTokenSymbol}</div>
-                <IoIosArrowDown />
+          <div className="flex flex-col items-center">
+            <div className="flex items-center justify-center space-x-5 lg:flex-col lg:space-x-0">
+              {imgOutput ? (
+                <>
+                  <BackgroundGradient>
+                    <img
+                      onError={({ currentTarget }) => {
+                        currentTarget.onerror = null;
+                        currentTarget.src = "no-img.png";
+                      }}
+                      onClick={() => setIsOutputModalOpen(true)}
+                      src={imgOutput}
+                      alt="Output Token"
+                      className="w-28 rounded-full bg-white p-1 lg:w-40"
+                    />
+                  </BackgroundGradient>
+                </>
+              ) : (
+                <p>No image available for Output Token</p>
+              )}
+              <button
+                onClick={() => setIsOutputModalOpen(true)}
+                className="mt-3 min-w-24 rounded-md border bg-black py-2 transition hover:bg-white hover:text-black lg:min-w-40"
+              >
+                <div className="mx-5 flex items-center justify-between">
+                  <div className="font-medium">{outputTokenSymbol}</div>
+                  <IoIosArrowDown />
+                </div>
+              </button>
+            </div>
+
+            <div className="relative flex items-center justify-between pt-7 lg:hidden">
+              <input
+                type="number"
+                value={amount ?? ""}
+                onChange={(e) => handleAmountChange(e)}
+                placeholder="Enter Amount"
+                className="focus:ring-1.5 rounded-lg border bg-black py-2 pl-6 text-lg transition hover:border-indigo-400 hover:text-white"
+              />
+              <div className="absolute right-4">
+                <Spinner isLoading={isLoading}>
+                  <img
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src = "no-img.png";
+                    }}
+                    src={imgInput}
+                    className="h-8 w-8 rounded-full bg-white p-[1px]"
+                    alt="input token"
+                  />
+                </Spinner>
               </div>
-            </button>
+            </div>
+
+            <div className="relative flex items-center justify-between pt-10">
+              <input
+                type="number"
+                value={price?.toFixed(outputDecimals) ?? ""}
+                disabled={true}
+                placeholder="You Recieve"
+                className="rounded-lg border bg-black py-2 pl-6 text-lg text-white transition hover:border-indigo-400 hover:bg-zinc-950 hover:text-white"
+              />
+              <div className="absolute right-4">
+                <Spinner isLoading={isLoading}>
+                  <img
+                    src={imgOutput}
+                    className="h-8 w-8 rounded-full bg-white p-[1px]"
+                    alt="output token"
+                  />
+                </Spinner>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="  flex justify-center items-center ">
-          <div className="relative flex items-center">
-            <input
-              type="number"
-              value={amount ?? ""}
-              onChange={(e) => handleAmountChange(e)}
-              placeholder="Enter Amount"
-              className="border pl-4 pr-6 py-2 text-white text-xl rounded-md bg-transparent focus:ring-1.5 focus:ring-indigo-500 hover:border-indigo-400 transition"
-            />
-            <div className=" absolute right-4 ">
-              <Spinner isLoading={isLoading}>
-                <img
-                  src={imgInput}
-                  className="rounded-full w-8 h-8 p-0.5 bg-white"
-                  alt="input token"
-                />
-              </Spinner>
-            </div>
-          </div>
-        </div>
-        {price !== null && (
-          <div className="font-semibold text-2xl text-center space-x-3">
-            <div className=" flex justify-center space-x-2">
-              {isLoading ? (
-                <div>
-                  <LoadingDots />
-                </div>
-              ) : (
-                <p>{Number(price.toFixed(6)).toLocaleString()} </p>
-              )}
-              <p>{outputTokenSymbol}</p>
-            </div>
-            Estimated Output
-          </div>
-        )}
-        <div>
+        <div className="pt-10">
           {routePlan.length > 0 &&
             (isLoading ? (
               <>
-                <div className="  pb-10">
+                <div className="pb-10">
                   <SkeletonBox />
                 </div>
-                <span className=" h-0.5 w-full bg-white "></span>
-                <div className=" mt-5">
-                  <p className="font-medium text-2xl lg:text-3xl mb-3 text-center">
+                <span className="h-0.5 w-full bg-white"></span>
+                <div className="mt-5">
+                  <p className="mb-3 text-center text-2xl font-medium lg:text-3xl">
                     Route Details
                   </p>
                   <SkeletonCard />
                 </div>
               </>
             ) : (
-              <RouteDetails
-                routePlan={routePlan}
-                tokenImages={tokenImages}
-                setTokenImages={setTokenImages}
-              />
+              <RouteDetails routePlan={routePlan} />
             ))}
         </div>
       </div>
@@ -284,9 +372,9 @@ const Home = () => {
         onSelectToken={(mint) => {
           if (mint === outputToken) {
             handleTokenSwap();
-            return;
+          } else {
+            setInputToken(mint);
           }
-          setInputToken(mint);
         }}
         isInput={true}
       />
@@ -299,9 +387,9 @@ const Home = () => {
         onSelectToken={(mint) => {
           if (mint === inputToken) {
             handleTokenSwap();
-            return;
+          } else {
+            setOutputToken(mint);
           }
-          setOutputToken(mint);
         }}
         isInput={false}
       />

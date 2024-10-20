@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { tokenList } from "../utils/tokenList";
+import { tokenList } from "../lib/tokenList";
 import { IoClose } from "react-icons/io5";
 import axios from "axios";
 

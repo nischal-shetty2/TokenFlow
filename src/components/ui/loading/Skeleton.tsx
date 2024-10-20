@@ -2,11 +2,11 @@ import { MdImageSearch, MdKeyboardArrowRight } from "react-icons/md";
 
 export const LoadingDots = () => {
   return (
-    <div className="flex space-x-2 justify-center items-center bg-transparent py-2">
+    <div className="flex space-x-2 justify-center items-center bg-transparent">
       <span className="sr-only">Loading...</span>
-      <div className="h-4 w-4 bg-zinc-100 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-      <div className="h-4 w-4 bg-zinc-100 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-      <div className="h-4 w-4 bg-zinc-100 rounded-full animate-bounce"></div>
+      <div className="h-2 w-2 bg-zinc-100 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+      <div className="h-2 w-2 bg-zinc-100 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+      <div className="h-2 w-2 bg-zinc-100 rounded-full animate-bounce"></div>
     </div>
   );
 };
@@ -63,7 +63,7 @@ export const SkeletonBox = () => {
     <div className=" flex justify-center mb-5">
       <div
         role="status"
-        className=" border border-gray-200 p-5 divide-y divide-gray-200 rounded-lg lg:w-1/2 w-full max-w-md shadow animate-pulse md:p-6">
+        className=" border border-gray-200 py-3 px-4 mt-4 divide-y divide-gray-200 rounded-lg lg:w-52 w-full max-w-md shadow animate-pulse md:p-6">
         <div className="flex items-center justify-between">
           <MdImageSearch size={40} />
           <div>

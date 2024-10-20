@@ -64,7 +64,7 @@ export const BackgroundBeams = React.memo(
                   y2: [y2RandomValues[index]],
                 }}
                 transition={{
-                  duration: Math.random() * 20 + 5,
+                  duration: Math.random() * 20 + 10,
                   ease: "easeInOut",
                   repeat: Infinity,
                 }}>
