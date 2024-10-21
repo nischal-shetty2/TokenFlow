@@ -1,48 +1,38 @@
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletDisconnectButton } from "@solana/wallet-adapter-react-ui";
 import React from "react";
-import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+import { Logo } from "../Logo";
+import { Socials } from "../Socials";
 
 const Navbar: React.FC = () => {
+  const wallet = useWallet();
+  const { publicKey } = wallet;
   return (
-    <nav className="rounded-b-2xl border-b bg-black bg-opacity-90 p-7 text-white">
+    <nav className="animate-slide-down rounded-b-2xl border-b bg-black bg-opacity-90 p-4 text-white">
       <div className="container mx-auto flex items-center justify-between">
-        {/* Left Section - Social Icons */}
-        <div className="flex space-x-4">
-          <a
-            href="https://github.com/nischal-shetty2"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-gray-400"
-          >
-            <FaGithub size={24} />
-          </a>
-          <a
-            href="https://x.com/NischalShetty02"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-gray-400"
-          >
-            <FaTwitter size={24} />
-          </a>
-          <a
-            href="https://linkedin.com/in/your-linkedin"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-gray-400"
-          >
-            <FaLinkedin size={24} />
-          </a>
-        </div>
-
-        {/* Right Section - Button */}
         <div>
-          <a
-            href="https://jup.ag/swap"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700"
-          >
-            Jupiter Swap
-          </a>
+          <Logo />
+        </div>
+        <div className="flex space-x-5">
+          <div className="hidden items-center space-x-4 lg:flex">
+            <Socials />
+          </div>
+
+          <div>
+            {publicKey && (
+              <div className="transition duration-200 hover:-translate-y-0.5">
+                <WalletDisconnectButton
+                  style={{
+                    border: "1px solid white",
+                    backgroundColor: "black",
+                    color: "white",
+                    padding: "0px 6px",
+                    borderRadius: "12px",
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>

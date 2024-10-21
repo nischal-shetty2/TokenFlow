@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { MdImageSearch, MdKeyboardArrowRight } from "react-icons/md";
 import { TransactionBreakdown } from "./TransactionBD";
+import { useToast } from "@/hooks/use-toast";
 
 interface SwapInfo {
   ammKey: string;
@@ -24,6 +25,8 @@ interface RouteDetailsProps {
 }
 
 const RouteDetails: React.FC<RouteDetailsProps> = ({ routePlan }) => {
+  const { toast } = useToast();
+
   const [tokenImages, setTokenImages] = useState<Record<string, string>>({});
   const [tokenDecimals, setTokenDecimals] = useState<Record<string, number>>(
     {},
@@ -68,7 +71,11 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({ routePlan }) => {
         decimals: response.data.decimals,
       };
     } catch (error) {
-      console.error("Error fetching token data", error);
+      toast({
+        title: "Error fetching token data",
+        description: error instanceof Error ? error.message : "",
+        variant: "destructive",
+      });
       return { image: "", decimals: 0 };
     }
   };
@@ -299,7 +306,7 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({ routePlan }) => {
       </div>
 
       {/* Transaction Details */}
-      <div className="overflow-x-auto p-3 lg:p-5">
+      <div className="animate-slide-down overflow-x-auto p-3 lg:p-5">
         <p className="text-center text-2xl font-semibold lg:text-3xl">
           Transaction Breakdown
         </p>

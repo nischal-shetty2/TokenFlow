@@ -12,10 +12,14 @@ import {
 } from "../components/ui/loading/Skeleton";
 import { BackgroundGradient } from "../components/ui/BackgroundGradient";
 import SlippageOptions from "../components/SlippageOptions";
+import { SwapButton } from "../components/ui/SwapButton";
+import { useToast } from "@/hooks/use-toast";
+import { Footer } from "../components/ui/Footer";
 
 const Home = () => {
   const solAddress: string = "So11111111111111111111111111111111111111112";
   const usdcAddress: string = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+  const { toast } = useToast();
 
   const [inputToken, setInputToken] = useState(solAddress);
   const [inputTokenSymbol, setInputTokenSymbol] = useState("SOL");
@@ -36,7 +40,9 @@ const Home = () => {
   const [isInputModalOpen, setIsInputModalOpen] = useState(false);
   const [isOutputModalOpen, setIsOutputModalOpen] = useState(false);
   const [debouncedAmount, setDebouncedAmount] = useState<number | null>();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [quote, setQuote] = useState();
 
   useEffect(() => {
     if (inputToken) {
@@ -67,7 +73,7 @@ const Home = () => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDebouncedAmount(amount);
-    }, 900); // Delay in milliseconds
+    }, 700);
 
     return () => clearTimeout(timeoutId);
   }, [amount]);
@@ -90,23 +96,30 @@ const Home = () => {
       }
       const lamports = debouncedAmount * 10 ** inputDecimals;
       if (lamports <= 0) {
-        alert("Amount should be greater than 0");
         throw new Error("Invalid Price");
       }
       if (!slippage || slippage < 0.1) {
         throw new Error("Invalid Slippage");
       }
       const response = await axios.get(
-        `https://quote-api.jup.ag/v6/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${lamports}&swapMode=ExactIn&slippageBps=${
+        `https://quote-api.jup.ag/v6/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${lamports}&slippageBps=${
           slippage * 100
         }`,
       );
+      setQuote(response.data);
+      setIsDisabled(false);
+
       const { routePlan, outAmount } = response.data;
       const priceInOutputToken = outAmount / 10 ** outputDecimals;
       setPrice(priceInOutputToken);
       setRoutePlan(routePlan);
     } catch (error) {
-      console.error("Error fetching price:", error);
+      toast({
+        title: "Error fetching price.",
+        description: error instanceof Error ? error.message : "",
+        variant: "destructive",
+      });
+      setIsDisabled(true);
     } finally {
       setIsLoading(false);
     }
@@ -131,7 +144,10 @@ const Home = () => {
         setOutputTokenSymbol(symbol);
       }
     } catch (e) {
-      console.error("Error fetching token image:", e);
+      toast({
+        title: "Error fetching token image",
+        variant: "destructive",
+      });
       if (isInput) {
         setImgInput(" ");
         setInputDecimals(9);
@@ -147,10 +163,14 @@ const Home = () => {
     if (!slippage) {
       setSlippage(0.5);
     }
-    if (value === "" || (!isNaN(Number(value)) && Number(value) > 0)) {
+    if (value === "" || (!isNaN(Number(value)) && Number(value) >= 0)) {
       setAmount(value ? Number(value) : null);
     } else {
-      alert("Please enter a valid amount greater than 0.");
+      toast({
+        title: "Please enter an amount >= 0.1",
+        variant: "destructive",
+      });
+      setIsDisabled(true);
     }
   };
 
@@ -344,8 +364,15 @@ const Home = () => {
             </div>
           </div>
         </div>
+        <div className="flex w-full justify-center">
+          <SwapButton
+            price={amount ?? 0}
+            quote={quote}
+            isDisabled={isDisabled}
+          />
+        </div>
 
-        <div className="pt-10">
+        <div className="">
           {routePlan.length > 0 &&
             (isLoading ? (
               <>
@@ -363,6 +390,9 @@ const Home = () => {
             ) : (
               <RouteDetails routePlan={routePlan} />
             ))}
+        </div>
+        <div className="block lg:hidden">
+          <Footer />
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { tokenList } from "../lib/tokenList";
 import { IoClose } from "react-icons/io5";
 import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
 
 interface TokenSearchModalProps {
   isOpen: boolean;
@@ -16,6 +17,8 @@ const TokenSearchModal: React.FC<TokenSearchModalProps> = ({
   onSelectToken,
   isInput,
 }) => {
+  const { toast } = useToast();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [popularTokens, setPopularTokens] = useState<any[]>([]);
   const [filteredTokens, setFilteredTokens] = useState<any[]>([]);
@@ -50,10 +53,10 @@ const TokenSearchModal: React.FC<TokenSearchModalProps> = ({
             onClose();
           }
         } catch (error) {
-          if (axios.isAxiosError(error) && error.response) {
-          } else {
-            console.error("Network error:", error);
-          }
+          toast({
+            title: "Invalid Token symbol/Address",
+            variant: "destructive",
+          });
         }
       }
     }

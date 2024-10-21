@@ -1,3 +1,4 @@
+import { useToast } from "@/hooks/use-toast";
 import { useState, ChangeEvent, useEffect } from "react";
 
 interface SlippageOptionsProps {
@@ -9,6 +10,8 @@ const SlippageOptions: React.FC<SlippageOptionsProps> = ({
   setSlippage,
   slippage,
 }) => {
+  const { toast } = useToast();
+
   const [selected, setSelected] = useState<number | "custom">(slippage || 0.5);
   const [inputSelected, setInputSelected] = useState<boolean>(false);
   const [customSlippage, setCustomSlippage] = useState<string>("");
@@ -65,13 +68,14 @@ const SlippageOptions: React.FC<SlippageOptionsProps> = ({
       setDebouncedSlippage(0);
     } else if (numValue < 0.1 && numValue !== 0) {
       setInvalidInput(true);
-      console.error("Slippage value too low");
+      toast({
+        title: "Enter a greater value",
+        variant: "destructive",
+      });
       setDebouncedSlippage(0.1);
       setCustomSlippage("0.1");
     } else {
       setInvalidInput(false);
-
-      // Debounce the slippage value update
       debounceSlippageUpdate(numValue);
       setSelected("custom");
     }
