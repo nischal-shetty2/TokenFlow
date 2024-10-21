@@ -1,5 +1,5 @@
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletDisconnectButton } from "@solana/wallet-adapter-react-ui";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import React from "react";
 import { Logo } from "../Logo";
 import { Socials } from "../Socials";
@@ -21,12 +21,12 @@ const Navbar: React.FC = () => {
           <div>
             {publicKey && (
               <div className="transition duration-200 hover:-translate-y-0.5">
-                <WalletDisconnectButton
+                <WalletMultiButton
                   style={{
                     border: "1px solid white",
                     backgroundColor: "black",
                     color: "white",
-                    padding: "0px 6px",
+                    padding: "0px 10px",
                     borderRadius: "12px",
                   }}
                 />

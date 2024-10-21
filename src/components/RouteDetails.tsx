@@ -237,13 +237,15 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({ routePlan }) => {
                   />
                 </div>
 
-                <div className="flex w-full flex-col text-center lg:w-auto">
+                <div className="flex w-full flex-col text-left lg:w-auto">
                   <p className="text-sm">{label}:</p>
                   <p className="break-all text-base">
                     {(Number(inAmount) / 10 ** inputDecimals).toFixed(6)} →{" "}
                     {(Number(outAmount) / 10 ** outputDecimals).toFixed(6)}
                   </p>
-                  <p className="text-sm text-gray-500">{percent}% of route</p>
+                  <p className="text-sm text-gray-500">
+                    {percent}% of this route
+                  </p>
                 </div>
               </>
             ) : (

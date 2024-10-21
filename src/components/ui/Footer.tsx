@@ -9,7 +9,7 @@ export function Footer() {
             All rights reserved TokenFlow™
           </p>
         </div>
-        <div className="flex justify-center space-x-5">
+        <div className="flex justify-center space-x-7">
           <Socials />
         </div>
       </div>

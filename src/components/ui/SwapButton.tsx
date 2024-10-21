@@ -140,14 +140,15 @@ export const SwapButton = ({
           </button>
         </>
       ) : (
-        <div className="animate-slide-down rounded-3xl p-1 hover:bg-gradient-to-r hover:from-blue-500 hover:to-orange-500">
+        <div className="animate-slide-down-slow rounded-3xl p-1 hover:bg-gradient-to-r hover:from-blue-500 hover:to-orange-500">
           <WalletMultiButton
             style={{
               border: "2px solid white",
               color: "white",
               backgroundColor: "black",
-              padding: "10px 20px",
+              padding: "10px 50px",
               borderRadius: "22px",
+              fontSize: "20px",
             }}
           />
         </div>
