@@ -3,7 +3,7 @@ import { useState, ChangeEvent, useEffect } from "react";
 
 interface SlippageOptionsProps {
   setSlippage: (value: number) => void;
-  slippage?: number; // Optionally pass current slippage value
+  slippage?: number;
 }
 
 const SlippageOptions: React.FC<SlippageOptionsProps> = ({
@@ -38,7 +38,6 @@ const SlippageOptions: React.FC<SlippageOptionsProps> = ({
     }
   }, [slippage]);
 
-  // Debounce Effect
   useEffect(() => {
     if (debouncedSlippage !== null) {
       setSlippage(debouncedSlippage);
@@ -85,7 +84,7 @@ const SlippageOptions: React.FC<SlippageOptionsProps> = ({
     clearTimeout((window as any).debounceTimeout);
     (window as any).debounceTimeout = setTimeout(() => {
       setDebouncedSlippage(value);
-    }, 900); // Adjust the delay as needed (300ms in this case)
+    }, 900);
   };
 
   return (
@@ -117,7 +116,6 @@ const SlippageOptions: React.FC<SlippageOptionsProps> = ({
           {1}%
         </button>
 
-        {/* Custom Input */}
         <div
           className={`flex items-center rounded-3xl rounded-l-none text-black ${
             inputSelected

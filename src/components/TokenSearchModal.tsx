@@ -65,7 +65,6 @@ const TokenSearchModal: React.FC<TokenSearchModalProps> = ({
   const handleOverlayClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
-    // If the target is the overlay itself, close the modal
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -76,7 +75,7 @@ const TokenSearchModal: React.FC<TokenSearchModalProps> = ({
       className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75 transition-opacity ${
         isOpen ? "visible opacity-100" : "invisible opacity-0"
       }`}
-      onClick={handleOverlayClick} // Add click handler for the overlay
+      onClick={handleOverlayClick}
     >
       <div className="relative w-full max-w-md rounded-lg bg-zinc-950 p-6 shadow-lg">
         <button onClick={onClose} className="absolute right-3 top-3 font-thin">

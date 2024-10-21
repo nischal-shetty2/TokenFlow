@@ -120,13 +120,13 @@ export const SwapButton = ({
       {publicKey ? (
         <>
           <button
-            disabled={isDisabled}
+            disabled={isDisabled || isLoading}
             onClick={async () => {
               setIsLoading(true);
               await signAndSendTransaction();
               setIsLoading(false);
             }}
-            className={`animate-slide-down transform rounded-xl border border-black ${isLoading ? "bg-gray-900" : "bg-white"} px-28 py-1.5 text-xl font-medium text-black shadow-md transition duration-200 hover:-translate-y-1 hover:border-white hover:bg-zinc-950 hover:text-white disabled:cursor-not-allowed disabled:border-none disabled:bg-gray-900 sm:text-2xl`}
+            className={`animate-slide-down transform rounded-xl border border-black ${isLoading ? "bg-gray-900" : "bg-white"} px-28 py-1.5 text-xl font-medium text-black shadow-md transition duration-200 hover:-translate-y-1 hover:border-white hover:bg-zinc-950 hover:text-white disabled:cursor-not-allowed disabled:border-none disabled:bg-gray-900 disabled:hover:-translate-y-0 sm:text-2xl`}
           >
             <div className="bg-gradient-to-r from-purple-600 to-sky-500 bg-clip-text text-transparent">
               {isLoading ? (

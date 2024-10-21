@@ -2,7 +2,7 @@ interface TokenInputProps {
   label: string;
   token: string;
   setToken: (token: string) => void;
-  excludedToken: string; // Exclude the token from the dropdown
+  excludedToken: string; 
 }
 
 const TokenInput = ({

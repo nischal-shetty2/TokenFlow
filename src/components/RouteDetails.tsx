@@ -288,14 +288,12 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({ routePlan }) => {
 
   return (
     <div className="mx-4 my-4 space-y-4 text-xl lg:mx-10">
-      {/* Token Path Map Visualization */}
       <div className="animate-slide-down flex w-full justify-center">
         <div className="mb-10 w-fit overflow-x-auto rounded-lg border p-2 shadow-sm lg:p-4">
           {renderTokenPathMap()}
         </div>
       </div>
 
-      {/* Route Details */}
       <div className="animate-slide-down-slow flex justify-center">
         <div className="mb-5 w-fit rounded-lg shadow-sm lg:w-auto">
           <p className="text-center text-2xl font-medium lg:text-3xl">

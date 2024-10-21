@@ -45,30 +45,19 @@ const Home = () => {
   const [quote, setQuote] = useState();
 
   useEffect(() => {
+    if (inputToken && outputToken && debouncedAmount && slippage >= 0.1) {
+      checkPrice();
+    }
+  }, [inputToken, outputToken, debouncedAmount, slippage]);
+
+  useEffect(() => {
     if (inputToken) {
       getSwapTokenImg(inputToken, true);
-      if (debouncedAmount) {
-        checkPrice();
-      }
     }
-  }, [inputToken]);
-
-  useEffect(() => {
     if (outputToken) {
       getSwapTokenImg(outputToken, false);
-      if (debouncedAmount) {
-        checkPrice();
-      }
     }
-  }, [outputToken]);
-
-  useEffect(() => {
-    if (slippage > 0 && inputToken && outputToken) {
-      if (debouncedAmount) {
-        checkPrice();
-      }
-    }
-  }, [slippage]);
+  }, [inputToken, outputToken]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -77,13 +66,6 @@ const Home = () => {
 
     return () => clearTimeout(timeoutId);
   }, [amount]);
-
-  // Use debouncedAmount for your search logic
-  useEffect(() => {
-    if (debouncedAmount && !isLoading) {
-      checkPrice();
-    }
-  }, [debouncedAmount]);
 
   const checkPrice = async () => {
     setIsLoading(true);
@@ -102,7 +84,7 @@ const Home = () => {
         throw new Error("Invalid Slippage");
       }
       const response = await axios.get(
-        `https://quote-api.jup.ag/v6/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${lamports}&slippageBps=${
+        `https://quote-api.jup.ag/v6/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${lamports}&swapMode=ExactIn&slippageBps=${
           slippage * 100
         }`,
       );
@@ -174,7 +156,6 @@ const Home = () => {
     }
   };
 
-  // Function to swap the input and output tokens
   const handleTokenSwap = () => {
     if (isLoading) return;
     const tempToken = inputToken;
@@ -252,7 +233,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* switch button */}
           <div className="mx-20 grid grid-rows-10 lg:gap-4">
             <div className="row-span-10 flex items-center justify-center">
               <div className="lg:space-y-10">
