@@ -21,7 +21,7 @@ export const Socials = () => {
         <FaXTwitter size={24} />
       </a>
       <a
-        href="https://linkedin.com/in/your-linkedin"
+        href="https://www.linkedin.com/in/nischal-shetty-2ba446272/"
         target="_blank"
         rel="noopener noreferrer"
         className="transition-colors hover:text-zinc-400"
